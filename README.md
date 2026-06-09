@@ -1,4 +1,5 @@
-# 🚀 StudentPath AI
+# 🎓 AI Student Success Agent
+### Your Personal Career & Internship Mentor
 
 ## Overview
 
