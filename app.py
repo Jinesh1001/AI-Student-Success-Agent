@@ -1,6 +1,8 @@
+import io
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from pypdf import PdfReader
 
 st.set_page_config(
     page_title="AI Student Success Agent",
@@ -149,12 +151,16 @@ Student Success Agent helps students:
 # ======================
 # CAREER ANALYSIS
 # ======================
-
 elif page == "Career Analysis":
 
-    st.title("📊 Career Analysis")
+    st.title("📊 AI Career Analysis")
 
     name = st.text_input("Your Name")
+
+    year = st.selectbox(
+        "Current Year",
+        ["1st Year", "2nd Year", "3rd Year", "4th Year"]
+    )
 
     interest = st.selectbox(
         "Interest",
@@ -168,91 +174,172 @@ elif page == "Career Analysis":
         ]
     )
 
+    skills = st.text_input(
+        "Current Skills (comma separated)",
+        placeholder="Python, Git, SQL"
+    )
+
     if st.button("Analyze My Career"):
 
         st.success(f"Welcome {name}")
 
+        skill_list = skills.lower()
+
         if interest == "AI/ML":
 
-            st.subheader("🎯 Career Recommendation")
-            st.write("AI Engineer")
+            career = "AI Engineer"
 
-            st.subheader("📚 Skills To Learn")
-            st.write("Python")
-            st.write("SQL")
-            st.write("Statistics")
-            st.write("Machine Learning")
-            st.write("GitHub")
+            required_skills = [
+                "python",
+                "sql",
+                "statistics",
+                "machine learning",
+                "git"
+            ]
 
-            st.subheader("🛠 Recommended Projects")
-            st.write("AI Chatbot")
-            st.write("Resume Analyzer")
-            st.write("Student Success Agent")
-            st.write("Interview Preparation Agent")
-
-            st.progress(25)
+            projects = [
+                "AI Chatbot",
+                "Resume Analyzer",
+                "Student Success Agent",
+                "Interview Preparation Agent"
+            ]
 
         elif interest == "Data Science":
 
-            st.subheader("🎯 Career Recommendation")
-            st.write("Data Scientist")
+            career = "Data Scientist"
 
-            st.write("Python")
-            st.write("Pandas")
-            st.write("NumPy")
-            st.write("Statistics")
-            st.write("SQL")
+            required_skills = [
+                "python",
+                "pandas",
+                "numpy",
+                "statistics",
+                "sql"
+            ]
 
-            st.progress(20)
+            projects = [
+                "Sales Prediction",
+                "Student Performance Analysis",
+                "Data Dashboard",
+                "Customer Segmentation"
+            ]
 
         elif interest == "Cyber Security":
 
-            st.subheader("🎯 Career Recommendation")
-            st.write("Cyber Security Analyst")
+            career = "Cyber Security Analyst"
 
-            st.write("Networking")
-            st.write("Linux")
-            st.write("Ethical Hacking")
-            st.write("Python")
+            required_skills = [
+                "networking",
+                "linux",
+                "ethical hacking",
+                "python"
+            ]
 
-            st.progress(15)
+            projects = [
+                "Port Scanner",
+                "Password Strength Checker",
+                "Network Monitoring Tool",
+                "Vulnerability Scanner"
+            ]
 
         elif interest == "Cloud Computing":
 
-            st.subheader("🎯 Career Recommendation")
-            st.write("Cloud Engineer")
+            career = "Cloud Engineer"
 
-            st.write("AWS")
-            st.write("Azure")
-            st.write("Docker")
-            st.write("Kubernetes")
+            required_skills = [
+                "aws",
+                "azure",
+                "docker",
+                "kubernetes"
+            ]
 
-            st.progress(15)
+            projects = [
+                "Cloud Storage System",
+                "Docker Deployment",
+                "AWS Web App",
+                "Cloud Monitoring Dashboard"
+            ]
 
         elif interest == "Full Stack Development":
 
-            st.subheader("🎯 Career Recommendation")
-            st.write("Full Stack Developer")
+            career = "Full Stack Developer"
 
-            st.write("HTML")
-            st.write("CSS")
-            st.write("JavaScript")
-            st.write("React")
+            required_skills = [
+                "html",
+                "css",
+                "javascript",
+                "react"
+            ]
 
-            st.progress(15)
+            projects = [
+                "E-Commerce Website",
+                "Blog Platform",
+                "Portfolio Website",
+                "Student Management System"
+            ]
 
-        elif interest == "DevOps":
+        else:
 
-            st.subheader("🎯 Career Recommendation")
-            st.write("DevOps Engineer")
+            career = "DevOps Engineer"
 
-            st.write("Linux")
-            st.write("Docker")
-            st.write("Kubernetes")
-            st.write("CI/CD")
+            required_skills = [
+                "linux",
+                "docker",
+                "kubernetes",
+                "ci/cd"
+            ]
 
-            st.progress(10)
+            projects = [
+                "CI/CD Pipeline",
+                "Dockerized Web App",
+                "Kubernetes Deployment",
+                "Monitoring Dashboard"
+            ]
 
+        st.subheader("🎯 Career Recommendation")
+        st.success(career)
+
+        missing_skills = []
+
+        for skill in required_skills:
+            if skill not in skill_list:
+                missing_skills.append(skill.title())
+
+        st.subheader("📈 Skill Gap Analysis")
+
+        if len(missing_skills) == 0:
+            st.success("Excellent! You already have all required skills.")
+        else:
+            for skill in missing_skills:
+                st.write("❌", skill)
+
+        st.subheader("🗺 Learning Roadmap")
+
+        st.write("Month 1: Learn Fundamentals")
+        st.write("Month 2: Build Small Projects")
+        st.write("Month 3: Learn Advanced Concepts")
+        st.write("Month 4: Build Portfolio Projects")
+        st.write("Month 5: Internship Preparation")
+        st.write("Month 6: Apply for Opportunities")
+
+        st.subheader("🚀 Recommended Projects")
+
+        for project in projects:
+            st.write("✅", project)
+
+        readiness = max(0, 100 - len(missing_skills) * 20)
+
+        st.subheader("📊 Career Readiness Score")
+
+        st.progress(readiness / 100)
+
+        st.metric("Readiness", f"{readiness}%")
+
+        if readiness >= 80:
+            st.success("You are internship ready!")
+        elif readiness >= 50:
+            st.warning("You are on the right track. Learn a few more skills.")
+        else:
+            st.error("Focus on learning the missing skills first.")
 # ======================
 # INTERNSHIP SCORE
 # ======================
@@ -305,30 +392,78 @@ elif page == "Roadmap":
 # ======================
 # RESUME ANALYZER
 # ======================
-
 elif page == "Resume Analyzer":
 
     st.title("📄 Resume Analyzer")
 
     uploaded_file = st.file_uploader(
         "Upload Resume",
-        type=["pdf", "docx"]
+        type=["txt","pdf"]
     )
 
-    if uploaded_file:
+    if uploaded_file is not None:
 
-        st.success("Resume uploaded successfully!")
+        if uploaded_file.name.endswith(".pdf"):
 
-        st.subheader("📋 Resume Suggestions")
+            pdf = PdfReader(uploaded_file)
 
-        st.write("✅ Add GitHub Profile")
-        st.write("✅ Add LinkedIn Profile")
-        st.write("✅ Add Projects Section")
-        st.write("✅ Add Technical Skills")
-        st.write("✅ Add Certifications")
+            content = ""
 
-        st.metric("Resume Score", "75/100")
+            for page in pdf.pages:
+                content += page.extract_text() or ""
 
+        else:
+
+           content = uploaded_file.read().decode("utf-8")
+
+        st.subheader("Resume Preview")
+        st.text(content[:1000])
+
+        score = 0
+
+        keywords = [
+            "python",
+            "sql",
+            "machine learning",
+            "project",
+            "github",
+            "internship"
+        ]
+
+        found = []
+
+        for keyword in keywords:
+
+            if keyword.lower() in content.lower():
+                score += 15
+                found.append(keyword)
+
+        score = min(score, 100)
+
+        st.subheader("Resume Score")
+
+        st.progress(score / 100)
+
+        st.metric("Score", f"{score}%")
+
+        st.subheader("Detected Skills")
+
+        for item in found:
+            st.write("✅", item)
+
+        missing = [k for k in keywords if k not in found]
+
+        st.subheader("Suggestions")
+
+        for item in missing:
+            st.write("❌ Add:", item)
+
+        if score >= 80:
+            st.success("Strong Resume")
+        elif score >= 50:
+            st.warning("Good Resume, needs improvement")
+        else:
+            st.error("Resume needs more skills and projects")
 # ======================
 # PROJECT RECOMMENDER
 # ======================
